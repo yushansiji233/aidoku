@@ -13,7 +13,7 @@ sources = root / 'sources'
 icons = root / 'icons'
 sources.mkdir(exist_ok=True)
 icons.mkdir(exist_ok=True)
-archive = sources / 'zh.komiiccc-v1.aix'
+archive = sources / 'zh.komiiccc-v2.aix'
 with ZipFile(archive, 'w', ZIP_DEFLATED) as output:
     for path, name in (
         (wasm, 'main.wasm'),
@@ -23,16 +23,16 @@ with ZipFile(archive, 'w', ZIP_DEFLATED) as output:
         (source / 'res/icon.png', 'icon.png'),
     ):
         output.write(path, f'Payload/{name}')
-shutil.copyfile(source / 'res/icon.png', icons / 'zh.komiiccc-v1.png')
+shutil.copyfile(source / 'res/icon.png', icons / 'zh.komiiccc-v2.png')
 
 manifest_path = root / 'index.min.json'
 manifest = json.loads(manifest_path.read_text(encoding='utf-8-sig'))
 entry = {
     'id': 'zh.komiiccc',
     'name': 'Komiic.cc',
-    'version': 1,
-    'iconURL': 'icons/zh.komiiccc-v1.png',
-    'downloadURL': 'sources/zh.komiiccc-v1.aix',
+    'version': 2,
+    'iconURL': 'icons/zh.komiiccc-v2.png',
+    'downloadURL': 'sources/zh.komiiccc-v2.aix',
     'languages': ['zh'],
     'contentRating': 0,
     'baseURL': 'https://komiic.cc',

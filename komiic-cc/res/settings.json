@@ -6,12 +6,12 @@
 			{
 				"type": "switch",
 				"key": "preferBooks",
-				"title": "优先显示单行本",
+				"title": "单行本排在前面",
 				"default": true,
 				"refreshes": ["content"]
 			}
 		],
-		"footer": "Komiic 同一作品可能同时提供 Web 连载和单行本，两者是不同发行版本。"
+		"footer": "同时显示单行本和 Web 连载；此设置只调整排列顺序。"
 	},
 	{
 		"type": "group",

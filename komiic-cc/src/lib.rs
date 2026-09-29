@@ -109,16 +109,27 @@ impl KomiicSource {
 	}
 
 	fn select_chapter_version(
-		books: Vec<Chapter>,
-		web_chapters: Vec<Chapter>,
+		mut books: Vec<Chapter>,
+		mut web_chapters: Vec<Chapter>,
 		prefer_books: bool,
 	) -> Vec<Chapter> {
-		if prefer_books && !books.is_empty() {
+		let sort_chapters = |chapters: &mut Vec<Chapter>| {
+			chapters.sort_by(|a, b| {
+				let a_number = a.chapter_number.or(a.volume_number).unwrap_or(0.0);
+				let b_number = b.chapter_number.or(b.volume_number).unwrap_or(0.0);
+				b_number
+					.partial_cmp(&a_number)
+					.unwrap_or(core::cmp::Ordering::Equal)
+			});
+		};
+		sort_chapters(&mut books);
+		sort_chapters(&mut web_chapters);
+		if prefer_books {
+			books.extend(web_chapters);
 			books
-		} else if !web_chapters.is_empty() {
-			web_chapters
 		} else {
-			books
+			web_chapters.extend(books);
+			web_chapters
 		}
 	}
 
@@ -144,15 +155,11 @@ impl KomiicSource {
 				}
 			}
 		}
-		let mut chapters = Self::select_chapter_version(books, web_chapters, Self::prefers_books());
-		chapters.sort_by(|a, b| {
-			let a_number = a.chapter_number.or(a.volume_number).unwrap_or(0.0);
-			let b_number = b.chapter_number.or(b.volume_number).unwrap_or(0.0);
-			b_number
-				.partial_cmp(&a_number)
-				.unwrap_or(core::cmp::Ordering::Equal)
-		});
-		Ok(chapters)
+		Ok(Self::select_chapter_version(
+			books,
+			web_chapters,
+			Self::prefers_books(),
+		))
 	}
 }
 
@@ -544,12 +551,6 @@ mod tests {
 		assert!(
 			chapters
 				.iter()
-				.all(|chapter| chapter.volume_number.is_some() && chapter.chapter_number.is_none()),
-			"default chapter list should only include volumes"
-		);
-		assert!(
-			chapters
-				.iter()
 				.any(|chapter| chapter.volume_number == Some(9.0)),
 			"expected known volume 9"
 		);
@@ -580,16 +581,38 @@ mod tests {
 		let selected =
 			KomiicSource::select_chapter_version(books.clone(), web_chapters.clone(), true);
 		assert_eq!(selected[0].key, "book-1");
+		assert_eq!(selected[1].key, "chapter-1");
 
 		let selected =
 			KomiicSource::select_chapter_version(books.clone(), web_chapters.clone(), false);
 		assert_eq!(selected[0].key, "chapter-1");
+		assert_eq!(selected[1].key, "book-1");
 
 		let selected = KomiicSource::select_chapter_version(Vec::new(), web_chapters, true);
 		assert_eq!(selected[0].key, "chapter-1");
 
 		let selected = KomiicSource::select_chapter_version(books, Vec::new(), false);
 		assert_eq!(selected[0].key, "book-1");
+	}
+
+	#[aidoku_test]
+	fn chapter_groups_are_sorted_independently() {
+		let books = Vec::from([1.0, 2.0].map(|number| Chapter {
+			key: format!("book-{number}"),
+			volume_number: Some(number),
+			..Default::default()
+		}));
+		let web_chapters = Vec::from([1.0, 143.0].map(|number| Chapter {
+			key: format!("chapter-{number}"),
+			chapter_number: Some(number),
+			..Default::default()
+		}));
+		let selected = KomiicSource::select_chapter_version(books, web_chapters, true);
+		assert_eq!(selected.len(), 4);
+		assert_eq!(selected[0].volume_number, Some(2.0));
+		assert_eq!(selected[1].volume_number, Some(1.0));
+		assert_eq!(selected[2].chapter_number, Some(143.0));
+		assert_eq!(selected[3].chapter_number, Some(1.0));
 	}
 }
 
