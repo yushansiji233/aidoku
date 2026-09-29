@@ -1,0 +1,30 @@
+name: Build Komiic.cc Aidoku source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'komiic-cc/**'
+      - '.github/workflows/build-komiic.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install WebAssembly target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Build source
+        run: cargo build --release --target wasm32-unknown-unknown --manifest-path komiic-cc/Cargo.toml
+      - name: Package and add to list
+        run: python3 scripts/package_komiic.py
+      - name: Commit built source
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.min.json sources/zh.komiiccc-v1.aix icons/zh.komiiccc-v1.png
+          git diff --cached --quiet || (git commit -m 'Build Komiic.cc source' && git push)
