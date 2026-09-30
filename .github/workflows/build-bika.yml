@@ -1,0 +1,39 @@
+name: Build Bika and JM Aidoku sources
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'bika-web/**'
+      - 'jmcomic/**'
+      - 'scripts/package_bika.py'
+      - 'scripts/package_jm.py'
+      - '.github/workflows/build-bika.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: aidoku-bika-jm-build
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Install WebAssembly target
+        run: rustup target add wasm32-unknown-unknown
+      - name: Build sources
+        run: |
+          cargo build --release --target wasm32-unknown-unknown --manifest-path bika-web/Cargo.toml
+          cargo build --release --target wasm32-unknown-unknown --manifest-path jmcomic/Cargo.toml
+      - name: Package sources
+        run: |
+          python3 scripts/package_bika.py
+          python3 scripts/package_jm.py
+      - name: Commit built sources
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.min.json sources/ icons/
+          git diff --cached --quiet || (git commit -m 'Build Bika and JM sources' && git push)
