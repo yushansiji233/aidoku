@@ -1,0 +1,115 @@
+{
+  "info": {
+    "id": "zh.jmcomic",
+    "name": "禁漫天堂",
+    "version": 6,
+    "languages": [
+      "zh"
+    ],
+    "contentRating": 2,
+    "url": "https://18comic.vip"
+  },
+  "listings": [
+    {
+      "id": "o:mv",
+      "name": "总排行"
+    },
+    {
+      "id": "o:mp",
+      "name": "月排行"
+    },
+    {
+      "id": "o:md",
+      "name": "天排行"
+    },
+    {
+      "id": "o:mr",
+      "name": "最新漫画"
+    },
+    {
+      "id": "cat:another_cosplay",
+      "name": "角色扮演"
+    },
+    {
+      "id": "q:3D",
+      "name": "3D"
+    },
+    {
+      "id": "q:禁漫書庫",
+      "name": "禁漫书库"
+    },
+    {
+      "id": "q:无修正",
+      "name": "无修正"
+    },
+    {
+      "id": "q:剧情向",
+      "name": "剧情向"
+    },
+    {
+      "id": "q:校服",
+      "name": "校服"
+    },
+    {
+      "id": "q:纯爱",
+      "name": "纯爱"
+    },
+    {
+      "id": "q:人妻",
+      "name": "人妻"
+    },
+    {
+      "id": "q:教师",
+      "name": "教师"
+    },
+    {
+      "id": "q:百合",
+      "name": "百合"
+    },
+    {
+      "id": "q:YAOI",
+      "name": "Yaoi"
+    },
+    {
+      "id": "q:性转",
+      "name": "性转"
+    },
+    {
+      "id": "q:NTR",
+      "name": "NTR"
+    },
+    {
+      "id": "q:女装",
+      "name": "女装"
+    },
+    {
+      "id": "q:痴女",
+      "name": "痴女"
+    },
+    {
+      "id": "q:全彩",
+      "name": "全彩"
+    },
+    {
+      "id": "q:女性向",
+      "name": "女性向"
+    },
+    {
+      "id": "q:完结",
+      "name": "完结"
+    },
+    {
+      "id": "q:青年漫",
+      "name": "青年漫"
+    },
+    {
+      "id": "q:禁漫汉化组",
+      "name": "禁漫汉化组"
+    }
+  ],
+  "config": {
+    "hidesFiltersWhileSearching": true,
+    "supportsTagSearch": true,
+    "supportsAuthorSearch": true
+  }
+}

@@ -1,0 +1,97 @@
+[
+  {
+    "type": "group",
+    "title": "账号与线路",
+    "footer": "分类从网站接口动态加载。网页登录成功后关闭页面并刷新图源。排行榜可在列表菜单切换24小时、7天、30天；切换线路后刷新。",
+    "items": [
+      {
+        "type": "login",
+        "key": "login",
+        "title": "网页登录",
+        "logoutTitle": "退出登录",
+        "method": "web",
+        "url": "https://manhuabika.com/categories",
+        "localStorageKeys": [
+          "token"
+        ],
+        "clearCookiesOnLogout": true,
+        "notification": "login",
+        "refreshes": [
+          "content",
+          "listings"
+        ]
+      },
+      {
+        "type": "select",
+        "key": "route",
+        "title": "API 线路",
+        "values": [
+          "go2778.com",
+          "acbbb.com"
+        ],
+        "titles": [
+          "线路一",
+          "线路二"
+        ],
+        "default": "go2778.com",
+        "refreshes": [
+          "content",
+          "listings"
+        ]
+      },
+      {
+        "type": "select",
+        "key": "imageRoute",
+        "title": "图片线路",
+        "values": [
+          "official",
+          "proxy"
+        ],
+        "titles": [
+          "原站",
+          "跟随 API 线路"
+        ],
+        "default": "proxy",
+        "refreshes": [
+          "content"
+        ]
+      },
+      {
+        "type": "select",
+        "key": "imageQuality",
+        "title": "图片质量",
+        "values": [
+          "medium",
+          "original"
+        ],
+        "titles": [
+          "标准",
+          "原图"
+        ],
+        "default": "medium",
+        "refreshes": [
+          "content"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "title": "屏蔽",
+    "footer": "支持填写漫画 ID，或会出现在标题、作者、简介、类别、标签等位置的文字。每项填写一个 ID 或关键词；命中后会在列表中隐藏，并阻止打开详情和阅读。修改后请刷新。不会删除书架或阅读历史。",
+    "items": [
+      {
+        "type": "editable-list",
+        "key": "blockedMetadataKeywords",
+        "title": "屏蔽关键词",
+        "lineLimit": 1,
+        "inline": true,
+        "placeholder": "输入漫画 ID 或关键词",
+        "refreshes": [
+          "content",
+          "listings"
+        ]
+      }
+    ]
+  }
+]

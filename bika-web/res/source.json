@@ -1,0 +1,13 @@
+{
+  "info": {
+    "id": "zh.manhuabika",
+    "name": "哔咔漫画",
+    "version": 5,
+    "url": "https://manhuabika.com",
+    "languages": [
+      "zh"
+    ],
+    "contentRating": 2
+  },
+  "listings": []
+}

@@ -1,0 +1,107 @@
+[
+  {
+    "type": "group",
+    "title": "账号",
+    "items": [
+      {
+        "type": "login",
+        "key": "login",
+        "title": "登录",
+        "logoutTitle": "登出",
+        "method": "basic",
+        "notification": "login",
+        "refreshes": [
+          "settings",
+          "content"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "title": "屏蔽",
+    "footer": "支持填写漫画 ID，或会出现在标题、作者、简介、类别等位置的文本；命中后将会于可见处隐藏，并适时阻止访问。",
+    "items": [
+      {
+        "type": "editable-list",
+        "key": "blockedMetadataKeywords",
+        "title": "内容屏蔽",
+        "lineLimit": 1,
+        "inline": true,
+        "placeholder": "输入需隐藏的关键字",
+        "refreshes": [
+          "content"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "group",
+    "title": "API 分类版",
+    "footer": "分类列表恢复旧版 API，不再读取 /theme/ 网页。带「搜索」的入口按关键词查询，不等同网页专题。周排行参数未确认，暂不提供。仍需真机验证速度和结果。",
+    "items": []
+  },
+  {
+    "type": "group",
+    "title": "线路与分流",
+    "footer": "API 线路按网站下发的域名顺序选择，顺序可能变化。成功配置缓存30分钟，域名列表缓存24小时。列表/详情失败时尝试其他API线路；封面/阅读图片失败时尝试图片分流。切换后刷新。",
+    "items": [
+      {
+        "type": "select",
+        "key": "apiRoute",
+        "title": "API 线路",
+        "values": [
+          "auto",
+          "0",
+          "1",
+          "2"
+        ],
+        "titles": [
+          "自动",
+          "网站线路 1",
+          "网站线路 2",
+          "网站线路 3"
+        ],
+        "default": "auto",
+        "refreshes": [
+          "content",
+          "listings"
+        ]
+      },
+      {
+        "type": "select",
+        "key": "imageShunt",
+        "title": "图片分流",
+        "values": [
+          "auto",
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "titles": [
+          "自动",
+          "分流 1",
+          "分流 2",
+          "分流 3",
+          "分流 4"
+        ],
+        "default": "auto",
+        "refreshes": [
+          "content",
+          "listings"
+        ]
+      },
+      {
+        "type": "button",
+        "key": "refreshNetwork",
+        "title": "重新获取线路",
+        "notification": "clearNetworkCache",
+        "refreshes": [
+          "content",
+          "listings"
+        ]
+      }
+    ]
+  }
+]
