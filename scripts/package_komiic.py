@@ -1,4 +1,5 @@
 import json
+import re
 import shutil
 from pathlib import Path
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -42,4 +43,15 @@ entry = {
 manifest['sources'] = [s for s in manifest['sources'] if s['id'] != entry['id']]
 manifest['sources'].insert(0, entry)
 manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+# Remove only obsolete versioned artifacts for this source after packaging succeeds.
+for directory, suffix, current in (
+    (sources, 'aix', archive.name),
+    (icons, 'png', f'zh.komiiccc-v{version}.png'),
+):
+    for path in directory.iterdir():
+        if (path.name != current
+                and re.fullmatch(r'zh\.komiiccc-v\d+\.' + suffix, path.name)
+                and path.is_file() and not path.is_symlink()):
+            path.unlink()
+            print(f'Removed obsolete artifact: {path.name}')
 print(f'Packaged {archive}; list has {len(manifest["sources"])} sources')

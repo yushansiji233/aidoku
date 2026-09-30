@@ -29,7 +29,7 @@ const PAGE_SIZE: i32 = 20;
 const CATEGORY_PAGE_SIZE: i32 = 30;
 const RECOMMENDATION_PAGE_SIZE: i32 = 25;
 const SORT_ORDER_IDS: [&str; 3] = ["DATE_UPDATED", "VIEWS", "FAVORITE_COUNT"];
-const PREFER_BOOKS_KEY: &str = "preferBooks";
+const CHAPTER_VERSION_KEY: &str = "chapterVersion";
 const TOKEN_KEY: &str = "token";
 const JUST_LOGGED_IN_KEY: &str = "justLoggedIn";
 
@@ -130,13 +130,7 @@ impl KomiicSource {
         };
         sort_chapters(&mut books);
         sort_chapters(&mut web_chapters);
-        let mut chapters = if prefer_books {
-            books.extend(web_chapters);
-            books
-        } else {
-            web_chapters.extend(books);
-            web_chapters
-        };
+        let mut chapters = if prefer_books { books } else { web_chapters };
         // Aidoku generates its own "chapter" labels when numeric fields are present.
         // Use the numbers only for source sorting, then display our explicit 卷/话 titles.
         for chapter in &mut chapters {
@@ -168,11 +162,18 @@ impl KomiicSource {
                 }
             }
         }
-        Ok(Self::select_chapter_version(
+        let show_books = Self::shows_books();
+        let chapters = Self::select_chapter_version(
             books,
             web_chapters,
-            Self::prefers_books(),
-        ))
+            show_books,
+        );
+        if chapters.is_empty() {
+            let label = if show_books { "卷" } else { "话" };
+            let other = if show_books { "话" } else { "卷" };
+            bail!("网站没有「{label}」目录，请在 Komiic.cc 图源设置把「目录版本」切为「{other}」，再刷新漫画详情。");
+        }
+        Ok(chapters)
     }
 }
 
@@ -540,7 +541,7 @@ mod tests {
     #[aidoku_test]
     fn detail_returns_description_and_explicit_chapter_titles() {
         let source = KomiicSource;
-        defaults_set(PREFER_BOOKS_KEY, DefaultValue::Bool(true));
+        defaults_set(CHAPTER_VERSION_KEY, DefaultValue::String(String::from("book")));
         let manga = source
             .get_manga_update(
                 Manga {
@@ -590,19 +591,19 @@ mod tests {
 
         let selected =
             KomiicSource::select_chapter_version(books.clone(), web_chapters.clone(), true);
+        assert_eq!(selected.len(), 1);
         assert_eq!(selected[0].key, "book-1");
-        assert_eq!(selected[1].key, "chapter-1");
 
         let selected =
             KomiicSource::select_chapter_version(books.clone(), web_chapters.clone(), false);
+        assert_eq!(selected.len(), 1);
         assert_eq!(selected[0].key, "chapter-1");
-        assert_eq!(selected[1].key, "book-1");
 
         let selected = KomiicSource::select_chapter_version(Vec::new(), web_chapters, true);
-        assert_eq!(selected[0].key, "chapter-1");
+        assert!(selected.is_empty());
 
         let selected = KomiicSource::select_chapter_version(books, Vec::new(), false);
-        assert_eq!(selected[0].key, "book-1");
+        assert!(selected.is_empty());
     }
 
     #[aidoku_test]
@@ -617,11 +618,13 @@ mod tests {
             chapter_number: Some(number),
             ..Default::default()
         }));
-        let selected = KomiicSource::select_chapter_version(books, web_chapters, true);
-        assert_eq!(selected.len(), 4);
+        let selected = KomiicSource::select_chapter_version(books.clone(), web_chapters.clone(), true);
+        assert_eq!(selected.len(), 2);
         assert_eq!(selected[0].key, "book-2");
         assert_eq!(selected[1].key, "book-1");
-        assert_eq!(selected[2].key, "chapter-143");
-        assert_eq!(selected[3].key, "chapter-1");
+        let selected = KomiicSource::select_chapter_version(books, web_chapters, false);
+        assert_eq!(selected.len(), 2);
+        assert_eq!(selected[0].key, "chapter-143");
+        assert_eq!(selected[1].key, "chapter-1");
     }
 }

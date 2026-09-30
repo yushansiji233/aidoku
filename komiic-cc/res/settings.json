@@ -4,14 +4,16 @@
 		"title": "阅读设置",
 		"items": [
 			{
-				"type": "switch",
-				"key": "preferBooks",
-				"title": "单行本排在前面",
-				"default": true,
+				"type": "select",
+				"key": "chapterVersion",
+				"title": "目录版本",
+				"values": ["chapter", "book"],
+				"titles": ["话", "卷"],
+				"default": "chapter",
 				"refreshes": ["content"]
 			}
 		],
-		"footer": "同时显示卷和话；此设置只调整排列顺序。漫画目录的标题显示方式请选择「默认」。"
+		"footer": "默认只显示话，选择卷后只显示卷；切换影响此图源的所有漫画。切换后请下拉刷新漫画详情。网站没有所选版本时会提示，请切换另一版本。Aidoku 的「标题显示方式」只改名称，请保持「默认」；排序请选「图源顺序」。"
 	},
 	{
 		"type": "group",
