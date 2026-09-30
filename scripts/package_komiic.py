@@ -5,6 +5,8 @@ from zipfile import ZipFile, ZIP_DEFLATED
 
 root = Path(__file__).resolve().parents[1]
 source = root / 'komiic-cc'
+info = json.loads((source / 'res/source.json').read_text(encoding='utf-8-sig'))['info']
+version = info['version']
 wasm = source / 'target/wasm32-unknown-unknown/release/komiic_cc.wasm'
 if not wasm.is_file():
     raise SystemExit(f'Missing compiled source: {wasm}')
@@ -13,7 +15,7 @@ sources = root / 'sources'
 icons = root / 'icons'
 sources.mkdir(exist_ok=True)
 icons.mkdir(exist_ok=True)
-archive = sources / 'zh.komiiccc-v2.aix'
+archive = sources / f'zh.komiiccc-v{version}.aix'
 with ZipFile(archive, 'w', ZIP_DEFLATED) as output:
     for path, name in (
         (wasm, 'main.wasm'),
@@ -23,16 +25,16 @@ with ZipFile(archive, 'w', ZIP_DEFLATED) as output:
         (source / 'res/icon.png', 'icon.png'),
     ):
         output.write(path, f'Payload/{name}')
-shutil.copyfile(source / 'res/icon.png', icons / 'zh.komiiccc-v2.png')
+shutil.copyfile(source / 'res/icon.png', icons / f'zh.komiiccc-v{version}.png')
 
 manifest_path = root / 'index.min.json'
 manifest = json.loads(manifest_path.read_text(encoding='utf-8-sig'))
 entry = {
     'id': 'zh.komiiccc',
     'name': 'Komiic.cc',
-    'version': 2,
-    'iconURL': 'icons/zh.komiiccc-v2.png',
-    'downloadURL': 'sources/zh.komiiccc-v2.aix',
+    'version': version,
+    'iconURL': f'icons/zh.komiiccc-v{version}.png',
+    'downloadURL': f'sources/zh.komiiccc-v{version}.aix',
     'languages': ['zh'],
     'contentRating': 0,
     'baseURL': 'https://komiic.cc',
