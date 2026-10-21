@@ -106,6 +106,15 @@ pub mod url {
 		helpers::uri::encode_uri_component,
 	};
 
+	// Keep saved listing/filter IDs compatible; the API requires a timeframe suffix.
+	fn api_order(order: &str) -> &str {
+		match order {
+			"mp" => "mv_m",
+			"md" => "mv_t",
+			_ => order,
+		}
+	}
+
 	pub fn album(id: &str) -> String {
 		format!("/album?id={}", id)
 	}
@@ -115,6 +124,7 @@ pub mod url {
 	}
 
 	pub fn search(query: &str, order: &str, category: &str, page: i32) -> String {
+		let order = api_order(order);
 		let q = encode_uri_component(query);
 		if category.is_empty() {
 			format!("/search?search_query={}&o={}&page={}", q, order, page)
@@ -128,6 +138,7 @@ pub mod url {
 	}
 
 	pub fn filter(order: &str, category: &str, page: i32) -> String {
+		let order = api_order(order);
 		if category.is_empty() {
 			format!("/categories/filter?o={}&page={}", order, page)
 		} else {

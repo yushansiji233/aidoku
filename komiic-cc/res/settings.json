@@ -1,41 +1,53 @@
 [
-	{
-		"type": "group",
-		"title": "阅读设置",
-		"items": [
-			{
-				"type": "select",
-				"key": "chapterVersion",
-				"title": "目录版本",
-				"values": ["chapter", "book"],
-				"titles": ["话", "卷"],
-				"default": "chapter",
-				"refreshes": ["content"]
-			}
-		],
-		"footer": "默认只显示话，选择卷后只显示卷；切换影响此图源的所有漫画。切换后请下拉刷新漫画详情。网站没有所选版本时会提示，请切换另一版本。Aidoku 的「标题显示方式」只改名称，请保持「默认」；排序请选「图源顺序」。"
-	},
-	{
-		"type": "group",
-		"title": "账号",
-		"items": [
-			{
-				"type": "login",
-				"key": "login",
-				"title": "登录",
-				"logoutTitle": "登出",
-				"method": "basic",
-				"useEmail": true,
-				"notification": "login",
-				"refreshes": ["settings", "listings", "content"]
-			},
-			{
-				"type": "link",
-				"title": "内容警告偏好",
-				"url": "https://komiic.cc/settings/warnings",
-				"external": true,
-				"requires": "login"
-			}
-		]
-	}
+  {
+    "type": "group",
+    "title": "阅读设置",
+    "items": [
+      {
+        "type": "select",
+        "key": "chapterVersion",
+        "title": "目录版本",
+        "values": [
+          "chapter",
+          "book"
+        ],
+        "titles": [
+          "话",
+          "卷"
+        ],
+        "default": "chapter",
+        "refreshes": [
+          "content"
+        ]
+      }
+    ],
+    "footer": "默认优先显示话；一本漫画没有话时，自动只显示该书的卷，不改变其他漫画的设置。选择卷后只显示卷。目录版本是全局设置，切换后请下拉刷新漫画详情。Aidoku 的「标题显示方式」只改名称，请保持「默认」；排序请选「图源顺序」。"
+  },
+  {
+    "type": "group",
+    "title": "账号",
+    "items": [
+      {
+        "type": "login",
+        "key": "login",
+        "title": "登录",
+        "logoutTitle": "登出",
+        "method": "basic",
+        "useEmail": true,
+        "notification": "login",
+        "refreshes": [
+          "settings",
+          "listings",
+          "content"
+        ]
+      },
+      {
+        "type": "link",
+        "title": "内容警告偏好",
+        "url": "https://komiic.cc/settings/warnings",
+        "external": true,
+        "requires": "login"
+      }
+    ]
+  }
 ]

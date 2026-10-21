@@ -130,7 +130,8 @@ impl KomiicSource {
         };
         sort_chapters(&mut books);
         sort_chapters(&mut web_chapters);
-        let mut chapters = if prefer_books { books } else { web_chapters };
+        // A volume-only title falls back locally without changing the global preference.
+        let mut chapters = if prefer_books || web_chapters.is_empty() { books } else { web_chapters };
         // Aidoku generates its own "chapter" labels when numeric fields are present.
         // Use the numbers only for source sorting, then display our explicit 卷/话 titles.
         for chapter in &mut chapters {
@@ -603,7 +604,8 @@ mod tests {
         assert!(selected.is_empty());
 
         let selected = KomiicSource::select_chapter_version(books, Vec::new(), false);
-        assert!(selected.is_empty());
+        assert_eq!(selected.len(), 1);
+        assert_eq!(selected[0].key, "book-1");
     }
 
     #[aidoku_test]
